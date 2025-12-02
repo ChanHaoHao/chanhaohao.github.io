@@ -1,1 +1,1 @@
-The portfolio is at https://chanhaohao.github.io/Portfolio/
+The portfolio is at https://chanhaohao.github.io

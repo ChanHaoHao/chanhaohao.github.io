@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/syntax.css">
+
+    <script src="/assets/js/script.js"></script>
+    <!-- Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NK6SXX49WX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-NK6SXX49WX');
+    </script>
+        <!-- End Google Tag Manager -->
+    
+    <title>Hao-Yu Chan's Portfolio</title>
+    
+
+</head>
+<body>
+    <!-- NAVBAR -->
+     <!-- _includes/nav.html -->
+<nav>
+    <div class="left">
+        <a href="../../index.html">Hao-Yu Chan</a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="right desktop-nav">
+        <a href="../../index.html">
+            <span>Home</span>
+        </a>
+        <a href="../../index.html#projects">
+            <span>Projects</span>
+        </a>
+        <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+            <span>Resume</span>
+        </a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="menu-toggle" aria-label="Toggle menu">
+        <i class="fa fa-bars fa-2x"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-nav">
+        <a href="../../index.html">
+            <span>Home</span>
+        </a>
+        <a href="../../index.html#projects">
+            <span>Projects</span>
+        </a>
+        <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+            <span>Resume</span>
+        </a>
+    </div>
+</nav>
+
+    <div class="page"><div class="post-view">
+    <div class="summary">
+        <img src="../../assets/images/project-image/IM2GPS/AllPointsWImage.png" alt="IM2GPS Project">
+        
+        <div class="title-header">
+            <h1>IM2GPS Re-revisit: CLIP-powered Image Geolocation</h1>
+        </div>
+        
+        <div class="project-description">
+            <h2>Project Overview</h2>
+            <p>This project explores the feasibility of predicting the geographic origin of an image using modern multimodal models, inspired by the seminal works "IM2GPS: Estimating Geographic Information from a Single Image" [1] and "Revisiting IM2GPS in the Deep Learning Era" [2]. While the original IM2GPS pipeline relied primarily on handcrafted features and nearest-neighbor retrieval, and its successor incorporated deep CNN representations, this project investigates whether CLIP [3]—a model trained on large-scale image-text pairs—can serve as a powerful visual feature extractor for the geolocation task.</p>
+        </div>
+        <div class="skills-card">
+            <h2>Skills Used</h2> 
+            <div class="skills-list">
+                    <span class="skill">Python</span>
+                    <span class="skill">PyTorch</span>
+                    <span class="skill">CLIP</span>
+                    <span class="skill">ResNet</span>
+                    <span class="skill">KNN Retrieval</span>
+                    <span class="skill">t-SNE Visualization</span>
+            </div>
+        </div>
+    </div>
+      
+    <div class="content">
+        <hr />
+<h1 id="header-1">Review "IM2GPS: Estimating Geographic Information from a Single Image" and "Revisiting IM2GPS in the Deep Learning Era"</h1>
+<p>The original IM2GPS: Estimating Geographic Information from a Single Image (Hays & Efros, 2008) established the single-image geolocation problem and introduced a 6M geotagged Flickr dataset, proposing a retrieval-based pipeline that used handcrafted features—such as color histograms, texture descriptors, and gist—to match a query image to visually similar geotagged photos and infer its location via nearest-neighbor voting. Although limited by shallow features and dataset bias, the work demonstrated that even low-level visual cues can carry meaningful geographic information.</p>
+<p>Revisiting IM2GPS in the Deep Learning Era (Vo & Jacobs & Hays, 2017) significantly advances this framework by replacing handcrafted descriptors with high-level CNN features learned from ImageNet, showing that deep representations dramatically improve retrieval accuracy by capturing semantic cues like architecture, vegetation, and landmarks. The paper further explores an end-to-end geo-classification approach that partitions the world into geographic cells and trains a CNN to predict the correct region directly, a formulation that anticipates later systems like Google’s PlaNet. Together, these two works trace the evolution of image geolocation from early feature-based vision to deep-learning-driven models, highlighting how richer learned embeddings can transform a traditionally shallow retrieval task into a powerful modern recognition problem.</p>
+
+<hr />
+<h1 id="header-1">Evaluating Feature Representations for Coarse Geographic Classification</h1>
+<p>To better understand whether the extracted features contain structured geographic information before applying a KNN-based retrieval approach, I first evaluated their suitability for coarse geolocation classification. I conducted an ablation study using the MediaEval 2016 (MP16) dataset [4], which provides geolocation labels discretized into 3, 16, and 365 spatial categories, and implemented a lightweight multi-head classifier that takes extracted image features and predicts the corresponding geographic bin. By the 8th training epoch, the ResNet [5]-based features achieved losses of approximately 0.1122 (3-way), 0.3853 (16-way), and 0.9523 (365-way), whereas the CLIP features yielded substantially higher losses of 0.5481, 1.3526, and 2.9847 on the same tasks. These results indicate that CLIP’s embeddings are considerably less aligned with the structured spatial partitions required for discrete geo-classification, suggesting that they do not naturally encode the coarse geographic boundaries captured more effectively by traditional CNN-based features.</p>
+
+<div class="image-gallery" style="--gallery-height: 200px;">
+    <img src="../../assets/images/project-image/IM2GPS/resnet_tsne_scene.png" alt="Web image" loading="lazy" /> 
+    <img src="../../assets/images/project-image/IM2GPS/clip_tsne_scene.png" alt="Web image" loading="lazy" />    
+</div>
+<p style="font-size: 15px">t-SNE visualization of ResNet features (left) and CLIP features (right) colored by scene type. ResNet features show clearer clustering by scene, which may explain their superior performance in categorical geolocation tasks.</p>
+
+<h1 id="header-1">Image Geolocalization with KNN-based Retrieval approach</h1>
+<p>Building upon the insights from the aforementioned works, this project investigates the use of CLIP (Contrastive Language-Image Pretraining) as a visual feature extractor for the image geolocalization task. CLIP, trained on 400 million image-text pairs, learns rich multimodal representations that align images with their corresponding textual descriptions. By leveraging CLIP’s ability to capture high-level semantic concepts, this approach aims to enhance the retrieval-based geolocation pipeline.</p>
+<p>The extracted features from the training set are used to identify the k-nearest neighbors for each test image, along with their associated weights and geographic coordinates. The latitude and longitude of these neighbors are then projected onto a unit sphere (x, y, z), combined using the computed weights, and finally reprojected from the unit sphere back into latitude and longitude to produce the final location estimate.</p>
+
+<div class="image-gallery" style="--gallery-height: 200px;">
+    <img src="../../assets/images/project-image/IM2GPS/Compare_closest_pairs_world.png" alt="Web image" loading="lazy" />
+    <img src="../../assets/images/project-image/IM2GPS/Compare_furthest_pairs_world.png" alt="Web image" loading="lazy" />
+</div>
+<div class="image-gallery" style="--gallery-height: 200px;">
+    <img src="../../assets/images/project-image/IM2GPS/ResNet_KDE_error.png" alt="Web image" loading="lazy" /> 
+    <img src="../../assets/images/project-image/IM2GPS/CLIP_KDE_error.png" alt="Web image" loading="lazy" />
+</div>
+
+<p>We observe that combining CLIP features with k-Nearest Neighbors yields a substantial improvement in geolocation accuracy compared to using ResNet features. This result is unexpected, as it contrasts sharply with the earlier scene-classification experiment, where CLIP performed noticeably worse. In the geolocation setting, however, the mean distance error obtained with CLIP is nearly half that of ResNet, indicating that CLIP’s embedding space is far more effective for retrieval-based localization despite its weaker performance in structured classification.</p>
+
+<hr />
+<h1 id="header-1">t-SNE Insights: Why CLIP Outperforms ResNet in KNN Geolocation</h1>
+<p>A closer analysis reveals that this behavior is tied to how each model organizes urban imagery in feature space. When applying t-SNE to visualize only the urban subset of the dataset, with points colored by their geographic regions, we observe that CLIP features produce much clearer separation between classes than ResNet. While ResNet embeddings scatter different regions more diffusely across the t-SNE plot, CLIP embeddings form tighter, more coherent clusters, indicating that CLIP captures semantic and stylistic cues that are more geographically informative for retrieval. This improved clustering helps explain why CLIP performs significantly better in the KNN-based geolocation task despite its weaker performance in structured geo-classification.</p>
+
+<div class="image-gallery" style="--gallery-height: 200px;">
+    <img src="../../assets/images/project-image/IM2GPS/resnet_tsne_urban_regions.png" alt="Web image" loading="lazy" /> 
+    <img src="../../assets/images/project-image/IM2GPS/clip_tsne_urban_regions.png" alt="Web image" loading="lazy" />    
+</div>
+
+<hr />
+<h1 id="header-1">Conclusion and Future Work</h1>
+<p>This project explored the effectiveness of CLIP and ResNet feature embeddings for single-image geolocation, drawing inspiration from the IM2GPS framework and its deep-learning revisitation. Through a combination of KNN-based retrieval, coarse geographic classification, and t-SNE feature analysis, we found that CLIP and ResNet encode geographic information in fundamentally different ways. While CLIP performs poorly in structured geo-classification tasks—showing significantly higher losses across the 3, 16, and 365 MP16 region splits—it achieves markedly superior performance in retrieval-based geolocation, with mean distance errors nearly half those obtained using ResNet features. Visualization of the urban subset via t-SNE further clarifies this discrepancy: CLIP embeddings form tighter, more coherent region-specific clusters, whereas ResNet features appear more diffusely scattered. These results suggest that CLIP’s semantic embedding space, shaped by large-scale image–text pretraining, is better suited for similarity-based localization than grid-based classification, even though it lacks strong alignment with fixed geographic partitions.</p>
+<p>Based on these observations, a promising direction for future work is to first train a coarse 3-class classifier using ResNet features to identify broad geographic regions, and then apply a KNN-based retrieval method using CLIP embeddings within the predicted region. This coarse-to-fine hybrid approach could leverage the strong classification capabilities of ResNet and the superior retrieval performance of CLIP, potentially yielding a significant boost in overall geolocation accuracy.</p>
+
+<hr />
+<h1 id="header-1">References</h1>
+<p>[1] Hays, J., & Efros, A. A. (2008). IM2GPS: Estimating Geographic Information from a Single Image. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR).</p>
+<p>[2] Vo, N., Jacobs, N., & Hays, J. (2017). Revisiting IM2GPS in the Deep Learning Era. In Proceedings of the IEEE International Conference on Computer Vision (ICCV).</p>
+<p>[3] Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., ... & Sutskever, I. (2021). Learning Transferable Visual Models From Natural Language Supervision. In Proceedings of the International Conference on Machine Learning (ICML).</p>
+<p>[4] MediaEval 2016 Placing Task. (2016). Retrieved from http://www.multimediaeval.org/mediaeval2016/placing-task/</p>
+<p>[5] He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep Residual Learning for Image Recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR).</p>
+<p></p>
+
+<div></br></div>
+</div>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL3LR5QV"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+</body>
+
+    <footer>
+    <div class="footer-content">
+        <div class="links">
+            <a href="../../index.html">
+                <span>Home</span>
+            </a>
+            <a href="../../index.html#projects">
+                <span>Projects</span>
+            </a>
+            <a href=https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing target="_blank" rel="noopener noreferrer">
+                <span>Resume</span>
+            </a>
+        </div>
+    </div>
+    <div class="license">
+        <span>For any question or suggestion for the portfolio template or projects, reach out <a class="help" href="mailto:aram.lee12@gmail.com"> Here</a> </span>
+        <p>FreeToEngineer portfolio template © 2025 by Aram Lee is licensed under <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1">CC BY 4.0</a></p>
+    </div>
+</footer>
+
+</html>
