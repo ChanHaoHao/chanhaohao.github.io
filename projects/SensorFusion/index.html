@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/syntax.css">
+
+  <script src="/assets/js/script.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NK6SXX49WX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NK6SXX49WX');
+  </script>
+
+  <title>Hao-Yu Chan's Portfolio</title>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="left">
+      <a href="../../index.html">Hao-Yu Chan</a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="right desktop-nav">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="menu-toggle" aria-label="Toggle menu">
+      <i class="fa fa-bars fa-2x"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-nav">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="post-view">
+
+      <!-- LEFT SUMMARY COLUMN -->
+      <div class="summary">
+        <!-- Change this to your project cover image -->
+        <img src="../../assets/images/project-image/SensorFusion/early_late_fusion_img.png" alt="Early vs Late Fusion Project">
+
+        <div class="title-header">
+          <h1>Early vs. Late Camera-LiDAR Fusion in 3D Object Detection and Tracking</h1>
+        </div>
+
+        <div class="project-description">
+          <h2>Project Overview</h2>
+          <p>
+            This project compares two fusion strategies for 3D object detection and tracking on KITTI:
+            <strong>early fusion</strong> (using camera segmentation to gate LiDAR points early) and
+            <strong>late fusion</strong> (merging high-level outputs from SAM3 and PV-RCNN).
+            The study highlights practical failure modes and why late fusion can be more robust in the presence
+            of camera degradation and LiDAR-only category gaps.
+          </p>
+        </div>
+
+        <div class="skills-card">
+          <h2>Skills Used</h2>
+          <div class="skills-list">
+            <span class="skill">Python</span>
+            <span class="skill">Sensor Fusion</span>
+            <span class="skill">SAM3</span>
+            <span class="skill">OpenPCDet</span>
+            <span class="skill">PV-RCNN</span>
+            <span class="skill">3D Object Detection</span>
+            <span class="skill">3D Object Tracking</span>
+            <span class="skill">KITTI Dataset</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT CONTENT COLUMN -->
+      <div class="content">
+
+        <hr />
+        <h1 id="header-1">Introduction</h1>
+        <p>
+          Autonomous vehicles depend on multimodal sensing to achieve accurate environmental perception. Among these
+          modalities, cameras provide detailed appearance information, whereas LiDAR delivers precise depth and geometric
+          structure. Fusing data from these sensors enables a more reliable and comprehensive understanding of the
+          surrounding environment by leveraging their complementary capabilities.
+        </p>
+
+        <h2>Video for SAM3 detection and PV-RCNN only</h2>
+        <p>
+          <img src="../../assets/images/project-image/SensorFusion/merged_sam3_openpcdet.gif" alt="SAM3 and PV-RCNN only" loading="lazy" />
+        </p>
+        <p>
+          Camera-based perception degrades significantly under challenging conditions such as low-light or nighttime
+          environments, glare, shadows, snow, and dust, which directly reduces segmentation accuracy and reliability.
+          Moreover, when extracting LiDAR points corresponding to segmented vehicles, the sparsity of the point cloud
+          makes it difficult to reliably infer vehicle orientation using LiDAR alone. In 3D point cloud–based detection,
+          false positives occur frequently; while the method can often estimate object orientation accurately, it tends
+          to misclassify or merge targets when multiple objects are spatially close.
+        </p>
+
+        <hr />
+        <h1 id="header-1">Why fuse RGB and LiDAR info?</h1>
+        <p>
+          In this project, we compare two sensor fusion strategies — early fusion and late fusion — for 3D object detection.
+          Using the KITTI dataset, SAM3 (2D image segmentation model) and PV-RCNN (3D object detection model) are used to
+          evaluate each approach.
+        </p>
+
+        <h2>Early Fusion</h2>
+        <p>
+          Early fusion combines raw or low-level features from different sensors at the beginning of the detection pipeline.
+          In this project, the pipeline for early fusion is:
+        </p>
+        <ol>
+          <li>Get the masks of each target features by passing the prompts and images to SAM3</li>
+          <li>Project the LiDAR points into the image frame</li>
+          <li>Find all the LiDAR points in each masks</li>
+          <li>
+            Use these points to do object tracking by comparing the IoU of objects across timesteps, and estimate object pose
+          </li>
+        </ol>
+
+        <h2>Late Fusion</h2>
+        <p>
+          Late fusion keeps sensor processing streams separate and combines their high-level outputs. In this project, the
+          pipeline for late fusion is:
+        </p>
+        <ol>
+          <li>Get the masks of each target features by passing the prompts and images to SAM3</li>
+          <li>Use PV-RCNN to get 3D detections from LiDAR pointcloud</li>
+          <li>Combine detections using IoU matching</li>
+        </ol>
+
+        <h2>Video for Early Fusion and Late Fusion</h2>
+        <p>
+          <img src="../../assets/images/project-image/SensorFusion/merged_early_late_fusion.gif" alt="Video for Early Fusion and Late Fusion" loading="lazy" />
+        </p>
+        <p>
+          In early fusion, failures in camera-based perception propagate directly to the fused representation: if the camera
+          does not detect distant pedestrians or cyclists, these objects are not marked even when corresponding LiDAR points
+          are present. In contrast, late fusion combines high-level outputs from each modality, enabling the suppression of
+          false detections by discarding LiDAR-based detections with low confidence scores and no associated segmentation masks,
+          thereby improving overall detection accuracy.
+        </p>
+        <p>
+          Additionally, because PV-RCNN is not trained to recognize certain object categories such as trains, it fails to detect
+          them using LiDAR alone. However, by integrating camera-based segmentation with LiDAR point clouds in a late-fusion
+          framework, such previously unseen objects can still be successfully identified.
+        </p>
+
+        <hr />
+        <h1 id="header-1">Next steps</h1>
+        <p>
+          Dive into BEVFusion and explore how encoding LiDAR points into voxel space and combining them with image-encoder features
+          can form a joint feature space that supports semantic masks, 3D pointcloud detection, and even end-to-end trajectory planning.
+        </p>
+
+        <hr />
+        <h1 id="header-1">References</h1>
+        <p>
+          <a href="https://medium.com/@az.tayyebi/early-vs-late-camera-lidar-fusion-in-3d-object-detection-a-performance-study-5fb1688426f9"
+             target="_blank" rel="noopener noreferrer">
+            [1] Early vs. Late Camera-LiDAR Fusion in 3D Object Detection: A Performance Study
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/facebookresearch/sam3" target="_blank" rel="noopener noreferrer">[2] SAM3</a>
+        </p>
+        <p>
+          <a href="https://github.com/open-mmlab/OpenPCDet" target="_blank" rel="noopener noreferrer">[3] OpenPCDet</a>
+        </p>
+        <p>
+          <a href="https://www.cvlibs.net/datasets/kitti/" target="_blank" rel="noopener noreferrer">[4] KITTI Dataset</a>
+        </p>
+
+        <div></br></div>
+      </div>
+    </div>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL3LR5QV"
+              height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  </div>
+
+</body>
+
+<footer>
+  <div class="footer-content">
+    <div class="links">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+  </div>
+  <div class="license">
+    <span>For any question or suggestion for the portfolio template or projects, reach out
+      <a class="help" href="mailto:aram.lee12@gmail.com"> Here</a>
+    </span>
+    <p>
+      FreeToEngineer portfolio template © 2025 by Aram Lee is licensed under
+      <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1">CC BY 4.0</a>
+    </p>
+  </div>
+</footer>
+
+</html>
