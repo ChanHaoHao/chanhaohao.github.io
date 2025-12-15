@@ -148,8 +148,8 @@
       </div>
       <div class="work-content">
         <ul class="contents">
-          <li>Developed a 3D reconstruction pipeline combining VGGT and GICP for long-term video sequences, achieving an average of 11× lower reconstruction error compared to Monocular Gaussian Splatting SLAM.</li>
-          <li>Achieved 0.9 mIoU with DINO features and implemented a semantic head in PyTorch using only RGB input on Scannetpp dataset</li>
+            <li>Engineered VGGT + GICP 3D reconstruction framework for video, integrating DINOv2 feature embeddings with lightweight semantic head to produce segmentation maps, reaching 0.9 IoU adding less than 10% runtime cost.</li>
+            <li>Developed real-time pose tracking, photorealistic 3D reconstruction, and semantic mapping via a shared 3D Gaussian map representation, enabling robust detection of object states across dynamic scenes.</li>
         </ul>
       </div>
     </div>
@@ -172,9 +172,11 @@
       </div>
       <div class="work-content">
         <ul class="contents">
-          <li>Performed Gauge R&R analysis on the factory vision system to evaluate measurement reliability and repeatability.</li>
+          <li>Developed a C# back-projection algorithm for real-time motion calibration, achieved 0.5mm precision, increased yield rate to 97.4%, reduced application offset deviation by 16%, and integrated into production line.</li>
           <li>Developed a custom vision pipeline in HALCON to detect pedestal contours and identify scratches on both dulled and shiny surfaces. Achieved 99% recognition accuracy for pedestal detection, with robust scratch identification across varying surface finishes.</li>
-          <li>Improved the placement algorithm for Phase Change Material (PCM) application, achieving sub-0.5 mm accuracy when aligning a 26.1×26.8 mm PCM onto a 27×28 mm pedestal. This improvement increased yield rate from 52.5% to 97.4%, significantly boosting production reliability and consistency.</li>
+          <li>Performed Gauge R&R analysis on the factory vision system to evaluate measurement reliability and repeatability.</li>
+          <li>Developed an LSTM failure-prediction model using 54 real-time sensor streams, enabling proactive fault alerts and reducing machine downtime through early anomaly detection.</li>
+          <li>Improved defect-detection accuracy by 13% by training a YOLOv8 model and CI/CD retraining on 5,000+ images.</li>
           <li>Designed a new automation machine for DIMM module assembly focused on maximizing throughput. By implementing an innovative mechanical design, the system increased units per hour (UPH) from 43 to 57.</li>
           <li>Developed an ergonomic automation machine for assembling HDD storage servers, with a focus on operator safety and ease of use. The design reduces physical strain during manual interactions while ensuring consistent, high-quality assembly in a high-throughput environment.</li>
         </ul>
@@ -230,7 +232,7 @@
           <li>Developed an EKF-based localization framework fusing IMU, encoder, and LiDAR odometry data, achieving 0.1 m navigation accuracy and eliminated corridor trap incidents in greenhouse environments.</li>
           <li>Designed control system on a MCU with Ethernet communication to an embedded system for autonomous vehicle.</li>
           <li>Designed and fabricated a motor mount with a dual-bearing support system for a 1.5 m robotic arm, ensuring year-long operation in high-humidity, high-temperature greenhouse environments.</li>
-          <li>Enhanced reliable path retracing via SLAM and online slip-ratio estimation for variable terrain conditions.</li>
+          <li>Achieved path retracing accuracy within 30 cm and 10° end-pose error by using prior command replay and online slip-ratio estimation under variable terrain conditions.</li>
         </ul>
       </div>
     </div>
