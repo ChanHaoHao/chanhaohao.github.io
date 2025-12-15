@@ -159,8 +159,8 @@
         </p>
         <p>
           In early fusion, failures in camera-based perception propagate directly to the fused representation: if the camera
-          does not detect distant pedestrians or cyclists, these objects are not marked even when corresponding LiDAR points
-          are present. In contrast, late fusion combines high-level outputs from each modality, enabling the suppression of
+          is blurred in snowy or raining conditions, or the camera has overexposed regions, it won't detect objects. In contrast, 
+          late fusion combines high-level outputs from each modality, enabling the suppression of
           false detections by discarding LiDAR-based detections with low confidence scores and no associated segmentation masks,
           thereby improving overall detection accuracy.
         </p>
