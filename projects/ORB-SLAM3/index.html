@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/syntax.css">
+
+  <script src="/assets/js/script.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NK6SXX49WX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NK6SXX49WX');
+  </script>
+
+  <title>Hao-Yu Chan's Portfolio</title>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="left">
+      <a href="../../index.html">Hao-Yu Chan</a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="right desktop-nav">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="menu-toggle" aria-label="Toggle menu">
+      <i class="fa fa-bars fa-2x"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-nav">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="post-view">
+
+      <!-- LEFT SUMMARY COLUMN -->
+      <div class="summary">
+        <!-- Change this to your project cover image -->
+        <img src="../../assets/images/project-image/ORB-SLAM3/YoloFastSAMResult.gif" alt="ORB-SLAM3 Dynamic Scene">
+
+        <div class="title-header">
+          <h1>ORB-SLAM3 in Dynamic Scenes (ROS2 + YOLO + FastSAM)</h1>
+        </div>
+
+        <div class="project-description">
+          <h2>Project Overview</h2>
+          <p>
+            ORB-SLAM3 is a real-time <strong>Visual / Visual-Inertial SLAM (VIO-SLAM)</strong> system that estimates camera motion
+            and builds a sparse map from monocular/stereo/RGB-D (optionally IMU) inputs. However, like most feature-based SLAM
+            pipelines, it assumes the majority of tracked features belong to a rigid/static world.
+          </p>
+          <p>
+            In this project, I first built a motion-consistency pruning module (DynamicSfM) to suppress dynamic MapPoints, then
+            designed a <strong>ROS2 (Jazzy)</strong> pipeline that removes dynamic regions explicitly using <strong>YOLO + FastSAM</strong>
+            masks, communicated through a lightweight <strong>ZeroMQ</strong> inference server.
+          </p>
+
+          <p style="margin-top: 0.8rem;">
+            <a href="https://github.com/ChanHaoHao/orb-slam3" target="_blank" rel="noopener noreferrer">Repo 1: orb-slam3</a>
+            <br />
+            <a href="https://github.com/ChanHaoHao/orb-slam3-ros-wrapper" target="_blank" rel="noopener noreferrer">Repo 2: orb-slam3-ros-wrapper</a>
+          </p>
+        </div>
+
+        <div class="skills-card">
+          <h2>Skills Used</h2>
+          <div class="skills-list">
+            <span class="skill">C++</span>
+            <span class="skill">ROS2 Jazzy</span>
+            <span class="skill">ORB-SLAM3</span>
+            <span class="skill">Visual-Inertial SLAM</span>
+            <span class="skill">Feature Tracking</span>
+            <span class="skill">YOLO</span>
+            <span class="skill">FastSAM</span>
+            <span class="skill">ZeroMQ (ZMQ)</span>
+            <span class="skill">Dynamic Object Removal</span>
+            <span class="skill">Bonn RGB-D Dynamic Dataset</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT CONTENT COLUMN -->
+      <div class="content">
+
+        <hr />
+        <h1 id="header-1">Introduction</h1>
+        <p>
+          <strong>ORB-SLAM3</strong> is a feature-based SLAM system that supports <strong>Visual SLAM</strong> and
+          <strong>Visual-Inertial SLAM (VIO-SLAM)</strong>, meaning it can fuse IMU measurements (when available) with
+          image-based tracking to improve robustness and scale observability.
+        </p>
+        <p>
+          While ORB-SLAM3 is highly accurate in static environments, it can fail in <strong>dynamic scenes</strong> (e.g., people walking)
+          because moving objects violate the rigid-world assumption: dynamic keypoints can be triangulated into incorrect 3D MapPoints,
+          which then corrupt pose estimation and pose-graph optimization.
+        </p>
+
+        <hr />
+        <h1 id="header-1">DynamicSfM: motion-consistency pruning</h1>
+        <p>
+          My first approach was to detect dynamic feature points by using a lightweight <strong>Structure-from-Motion (SfM)</strong> cue:
+          compute the moving direction of tracked feature points, then <strong>prune outliers whose motion direction disagrees with the
+          majority</strong> of points (assumed to be background). Then after the dynamic objects stopped moving (person putting down a box), 
+          it can be used to reconstruct the scene again.
+        </p>
+        <p>
+          This significantly improves robustness in many dynamic sequences (e.g., on the <strong>Bonn RGB-D Dynamic Dataset</strong>), with
+          large reductions in ATE reported in my repo (up to ~97% improvement in some scenes).
+        </p>
+        <div class="image-gallery" style="--gallery-height: 200px;">
+          <img src="../../assets/images/project-image/ORB-SLAM3/rgbd_bonn_moving_nonobstructing_box.png" alt="DynamicSfM moving" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/no_SfM_rgbd_bonn_moving_nonobstructing_box.png" alt="Origin moving" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/rgbd_bonn_placing_nonobstructing_box.png" alt="DynamicSfM placing" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/no_SfM_rgbd_bonn_placing_nonobstructing_box.png" alt="Origin placing" loading="lazy"/>
+        </div>
+        <p>
+          The above images compare the trajectory estimated by ORB-SLAM3 with and without DynamicSfM pruning on two
+          sequences from the Bonn RGB-D Dynamic Dataset: moving non-obstructing boxes (left two) and placing
+          non-obstructing boxes (right two). The black trajectory is the ground truth, the blue trajectory is the estimated path, while the red one is the
+          difference between ground truth and estimated path. We can see that DynamicSfM significantly improves accuracy by removing
+          dynamic feature points, while the vanilla ORB-SLAM3 drifts heavily due to moving objects.
+        </p>
+        <div class="image-gallery" style="--gallery-height: 200px;">
+          <img src="../../assets/images/project-image/ORB-SLAM3/Moving_nonobstructing_box.gif" alt="DynamicSfM Example 1" loading="lazy" />
+          <img src="../../assets/images/project-image/ORB-SLAM3/Placing_nonobstructing_box.gif" alt="DynamicSfM Example 2" loading="lazy" />
+        </div>
+        <p>
+          The dynamic SfM approach ran in two different scenes, moving non-obstructing boxes (left) and placing non-obstructing boxes (right). 
+          In the video, we can clearly see that the feature points on the moving human and boxes are successfully pruned, allowing ORB-SLAM3 
+          to maintain accurate tracking on the static background. After the box is steady, the feature points are detected again to reconstruct the scene.
+        </p>
+
+        <p>
+          <strong>Caveat:</strong> if the dynamic object moves in roughly the <em>same direction</em> as the camera (or dominates the view),
+          motion-consistency can no longer reliably separate foreground from background. In these cases, the algorithm may fail to prune the
+          correct points and SLAM can degrade or even break.
+        </p>
+        <div class="image-gallery" style="--gallery-height: 200px;">
+          <img src="../../assets/images/project-image/ORB-SLAM3/DynamicSfM.gif" alt="DynamicSfM fail moving" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/DynamicSfM.png" alt="Origin fail moving" loading="lazy"/>
+        </div>
+        <p>
+          When the person moves in the same direction as the camera (left), DynamicSfM fails to prune dynamic points, leading to significant drift in the estimated trajectory (right).
+        </p>
+
+        <hr />
+        <h1 id="header-1">ROS2 masked ORB-SLAM3: YOLO + FastSAM + ZMQ</h1>
+        <p>
+          To address the failure mode above, I built a second pipeline that removes dynamic regions <em>explicitly</em>:
+        </p>
+        <ol>
+          <li>
+            Receive <strong>unprocessed RGB images</strong> (and depth for RGB-D mode) from a dataset publisher in ROS2.
+          </li>
+          <li>
+            Run <strong>YOLO</strong> to detect humans and output bounding boxes.
+          </li>
+          <li>
+            Use each bounding box as a proposal for <strong>FastSAM</strong> to generate a pixel-accurate human mask.
+          </li>
+          <li>
+            Send/receive images + proposals via a lightweight <strong>ZeroMQ (ZMQ) inference server</strong> (ROS &harr; Python models).
+          </li>
+          <li>
+            Feed the <strong>mask</strong> into ORB-SLAM3 and prune any feature points / MapPoints that overlap the dynamic region
+            <em>before</em> pose estimation.
+          </li>
+        </ol>
+        <p>
+          This design keeps ORB-SLAM3 fast and stable, while allowing flexible swapping of detection/segmentation models on the server side.
+        </p>
+        <div class="image-gallery" style="--gallery-height: 200px;">
+          <img src="../../assets/images/project-image/ORB-SLAM3/YoloFastSAMResult.gif" alt="ROS2 YOLO FastSAM Pipeline" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/DynamicSfM.gif" alt="ROS2 YOLO FastSAM Pipeline" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/OriginalResult.gif" alt="ROS2 YOLO FastSAM Pipeline" loading="lazy"/>
+        </div>
+        <div class="image-gallery" style="--gallery-height: 200px;">
+          <img src="../../assets/images/project-image/ORB-SLAM3/rgbd_bonn_person_tracking_mask.png" alt="ROS2 YOLO FastSAM Pipeline Diagram" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/DynamicSfM.png" alt="ROS2 YOLO FastSAM Pipeline Diagram" loading="lazy"/>
+          <img src="../../assets/images/project-image/ORB-SLAM3/origin.png" alt="ROS2 YOLO FastSAM Pipeline Diagram" loading="lazy"/>
+        </div>
+        <p>
+          The above images compare the trajectory estimated by ORB-SLAM3 with YOLO+FastSAM masking (left),
+          DynamicSfM pruning (middle), and the vanilla ORB-SLAM3 (right) on the Bonn RGB-D Dynamic Dataset's
+          person-tracking sequence. The black trajectory is the ground truth, the blue trajectory is the estimated path, while the red one is the
+          difference between ground truth and estimated path. We can see that YOLO+FastSAM masking significantly improves accuracy by removing
+          dynamic feature points, while both DynamicSfM and vanilla ORB-SLAM3 drift heavily due to moving humans in the same direction as the camera.
+        </p>
+
+        <hr />
+        <h1 id="header-1">Results</h1>
+        <p>
+          On the <strong>Bonn RGB-D Dynamic Dataset (Person-Tracking)</strong>, the ROS2 masking pipeline dramatically improves trajectory
+          accuracy compared to both the vanilla baseline and motion-consistency pruning. In my repo example, ATE improves from ~0.65&nbsp;m
+          (baseline) / ~0.66&nbsp;m (DynamicSfM) to ~0.04&nbsp;m (YOLO+FastSAM masking).
+        </p>
+
+        <hr />
+        <h1 id="header-1">Conclusion</h1>
+        <p>
+          This project improves the robustness of <strong>ORB-SLAM3</strong> in dynamic environments by addressing its sensitivity to moving objects. A 
+          geometry-based DynamicSfM approach was first used to prune inconsistent feature motions, but it fails when dynamic objects move in the 
+          same direction as the camera. To overcome this limitation, a semantic-aware pipeline combining <strong>YOLO</strong>, <strong>FastSAM</strong>, 
+          and <strong>ORB-SLAM3</strong> was developed in ROS2, where dynamic features are removed using real-time human segmentation. Evaluated on the 
+          <strong>Bonn RGB-D Dynamic Dataset</strong>, the proposed system achieves up to <strong>90% accuracy improvement</strong>, demonstrating that 
+          integrating semantic perception with geometric SLAM is essential for reliable real-world deployment.
+        </p>
+
+        <hr />
+        <h1 id="header-1">References</h1>
+        <p>
+          <a href="https://github.com/UZ-SLAMLab/ORB_SLAM3" target="_blank" rel="noopener noreferrer">
+            [1] ORB-SLAM3 (official)
+          </a>
+        </p>
+        <p>
+          <a href="https://www.ipb.uni-bonn.de/data/rgbd-dynamic-dataset/" target="_blank" rel="noopener noreferrer">
+            [2] Bonn RGB-D Dynamic Dataset
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/ChanHaoHao/orb-slam3" target="_blank" rel="noopener noreferrer">
+            [3] ORB-SLAM3 DynamicSfM (this project)
+          </a>
+        </p>
+        <p>
+          <a href="https://github.com/ChanHaoHao/orb-slam3-ros-wrapper" target="_blank" rel="noopener noreferrer">
+            [4] ORB-SLAM3 ROS2 Wrapper (this project)
+          </a>
+        </p>
+
+        <div></br></div>
+      </div>
+    </div>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL3LR5QV"
+              height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  </div>
+
+</body>
+
+<footer>
+  <div class="footer-content">
+    <div class="links">
+      <a href="../../index.html"><span>Home</span></a>
+      <a href="../../index.html#projects"><span>Projects</span></a>
+      <a href="https://drive.google.com/file/d/11pgtXnIpYX-4J0UnDVH8iClthl-vGAJc/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer"><span>Resume</span></a>
+    </div>
+  </div>
+  <div class="license">
+    <span>For any question or suggestion for the portfolio template or projects, reach out
+      <a class="help" href="mailto:aram.lee12@gmail.com"> Here</a>
+    </span>
+    <p>
+      FreeToEngineer portfolio template © 2025 by Aram Lee is licensed under
+      <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1">CC BY 4.0</a>
+    </p>
+  </div>
+</footer>
+
+</html>
